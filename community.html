@@ -36,13 +36,33 @@
     <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
   </footer>
 
-  <script>
+  <!-- Firebase + your scripts -->
+  <script type="module">
+    // Import Firebase modules from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
+      authDomain: "nico-s-gfx-page.firebaseapp.com",
+      projectId: "nico-s-gfx-page",
+      storageBucket: "nico-s-gfx-page.appspot.com",
+      messagingSenderId: "427573612616",
+      appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
+      measurementId: "G-DJJ66RY3ST"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
     // Footer year + fade-in
     document.getElementById('y').textContent = new Date().getFullYear();
     const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
     document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-    // Community board storage
+    // Community board storage (localStorage for now)
     const KEY = 'nico_gfx_posts';
     const listEl = document.getElementById('postsList');
     const submitBtn = document.getElementById('submitPost');
