@@ -1,0 +1,72 @@
+<!-- tos.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nico • GFX — TOS</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Nico • GFX</span>
+      </div>
+      <nav style="display:flex;gap:10px">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="gallery.html">Gallery</a>
+        <a class="btn" href="commissions.html">Commissions</a>
+        <a class="btn" href="reviews.html">Reviews</a>
+        <a class="btn primary" href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="panel fade-in" style="padding:16px">
+          <h2>Terms of service</h2>
+          <div class="card">
+            <ul>
+              <li><strong>Payment policy:</strong> Once paid, Robux is not refundable (Roblox taxes/time).</li>
+              <li><strong>Revisions:</strong> One round of minor revisions included; major changes may cost extra.</li>
+              <li><strong>Commercial use:</strong> 50% discount on base price only if truly commercial. If caught lying, I will report you.</li>
+              <li><strong>Credits:</strong> Please credit me when posting publicly.</li>
+              <li><strong>Copyright:</strong> Artwork remains my property until fully paid.</li>
+              <li><strong>Behavior:</strong> I may refuse service to anyone abusive or breaking rules.</li>
+              <li><strong>Delivery:</strong> PNG/JPG by default; source files available for an additional fee.</li>
+            </ul>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Info</h3>
+            <ul>
+              <li>Status: OPEN • Software: Roblox Studio & PhotoPea</li>
+              <li>Contact: Discord (see Contact page) • Roblox profile link available</li>
+              <li>Turnaround: Usually a few hours to a day per render</li>
+            </ul>
+          </div>
+
+          <div style="margin-top:16px">
+            <a class="btn-xl" href="commissions.html">Go to Commissions</a>
+            <a class="btn-xl primary" href="contact.html">Order on Discord</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
