@@ -1,10 +1,9 @@
-<!-- community.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nico • GFX — Community</title>
+  <title>Nico • GFX — Community (Hidden)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,7 +12,7 @@
       <div class="wrap">
         <div class="panel fade-in">
           <h2>Community Board</h2>
-          <p class="small">Post your services, share images, and chat with others. (Hidden page)</p>
+          <p class="small">Post your services, share images, and chat. This page is hidden — bookmark it.</p>
 
           <!-- Post form -->
           <div class="card">
@@ -38,7 +37,12 @@
   </footer>
 
   <script>
+    // Footer year + fade-in
     document.getElementById('y').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    // Community board storage
     const KEY = 'nico_gfx_posts';
     const listEl = document.getElementById('postsList');
     const submitBtn = document.getElementById('submitPost');
@@ -49,13 +53,18 @@
     const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
     const save = items => localStorage.setItem(KEY, JSON.stringify(items));
 
+    function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
     function render() {
       const items = load();
-      if (!items.length) { listEl.innerHTML = '<div class="card"><p class="small">No posts yet. Be the first!</p></div>'; return }
+      if (!items.length) {
+        listEl.innerHTML = '<div class="card"><p class="small">No posts yet. Be the first!</p></div>';
+        return;
+      }
       listEl.innerHTML = items.map(p => `
         <div class="card" style="margin-bottom:10px">
-          <h3>${p.service}</h3>
-          <p class="small">${p.msg}</p>
+          <h3>${esc(p.service)}</h3>
+          <p class="small">${esc(p.msg)}</p>
           ${p.img ? `<img src="${p.img}" alt="Post image">` : ''}
           <div class="small">${new Date(p.date).toLocaleString()}</div>
         </div>
@@ -66,19 +75,23 @@
       const service = serviceEl.value.trim();
       const msg = msgEl.value.trim();
       if (!service || !msg) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const items = load();
-        items.unshift({ service, msg, img: reader.result, date: Date.now() });
-        save(items);
-        serviceEl.value = ''; msgEl.value = ''; imgEl.value = '';
-        render();
-      };
-      if (imgEl.files[0]) reader.readAsDataURL(imgEl.files[0]);
-      else {
+
+      const file = imgEl.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const items = load();
+          items.unshift({ service, msg, img: reader.result, date: Date.now() });
+          save(items);
+          serviceEl.value = ''; msgEl.value = ''; imgEl.value = '';
+          render();
+        };
+        reader.readAsDataURL(file);
+      } else {
         const items = load();
         items.unshift({ service, msg, img: null, date: Date.now() });
         save(items);
+        serviceEl.value = ''; msgEl.value = '';
         render();
       }
     });
