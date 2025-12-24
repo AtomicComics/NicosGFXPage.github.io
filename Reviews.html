@@ -1,0 +1,96 @@
+<!-- reviews.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nico • GFX — Reviews</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Nico • GFX</span>
+      </div>
+      <nav style="display:flex;gap:10px">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="gallery.html">Gallery</a>
+        <a class="btn" href="commissions.html">Commissions</a>
+        <a class="btn" href="tos.html">TOS</a>
+        <a class="btn primary" href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="panel fade-in" style="padding:16px">
+          <h2>Client reviews</h2>
+          <p class="small">Reviews are saved in your browser (localStorage) and will remain when you return.</p>
+
+          <div class="card" id="reviewsList"></div>
+
+          <div class="card" style="margin-top:14px">
+            <h3>Leave a review</h3>
+            <div class="review-form">
+              <label for="reviewName">Your name</label>
+              <input type="text" id="reviewName" placeholder="Name" />
+              <label for="reviewMsg">Your review</label>
+              <textarea id="reviewMsg" rows="4" placeholder="Tell me what you think"></textarea>
+              <button id="submitReview" class="btn-xl primary" style="margin-top:10px">Submit review</button>
+            </div>
+            <p class="note">Tip: Screenshot your commissioned render and include context in your message for others to see.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    const KEY = 'nico_gfx_reviews';
+    const listEl = document.getElementById('reviewsList');
+    const submitBtn = document.getElementById('submitReview');
+    const nameEl = document.getElementById('reviewName');
+    const msgEl = document.getElementById('reviewMsg');
+
+    function load() {
+      try { const d = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(d) ? d : [] }
+      catch { return [] }
+    }
+    function save(items) { localStorage.setItem(KEY, JSON.stringify(items)) }
+    function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+    function render() {
+      const items = load();
+      if (!items.length) { listEl.innerHTML = '<p class="small">No reviews yet. Be the first!</p>'; return }
+      listEl.innerHTML = items.map(r => `
+        <div class="card" style="margin-bottom:10px">
+          <div class="small"><strong>${esc(r.name)}</strong> • ${new Date(r.date).toLocaleString()}</div>
+          <div style="margin-top:8px">${esc(r.msg)}</div>
+        </div>
+      `).join('');
+    }
+    submitBtn.addEventListener('click', () => {
+      const name = nameEl.value.trim();
+      const msg = msgEl.value.trim();
+      if (!name || !msg) return;
+      const items = load();
+      items.unshift({ name, msg, date: Date.now() });
+      save(items);
+      nameEl.value = ''; msgEl.value = '';
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>
