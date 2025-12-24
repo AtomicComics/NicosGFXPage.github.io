@@ -1,0 +1,180 @@
+<!-- commissions.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nico • GFX — Commissions</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Nico • GFX</span>
+      </div>
+      <nav style="display:flex;gap:10px">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="gallery.html">Gallery</a>
+        <a class="btn" href="reviews.html">Reviews</a>
+        <a class="btn" href="tos.html">TOS</a>
+        <a class="btn primary" href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="panel fade-in" style="padding:16px">
+          <h2>Services and pricing</h2>
+          <div class="grid-3">
+            <div class="card">
+              <h3>PFP — Headshot</h3>
+              <p class="small">Head and shoulders, basic pose/lighting.</p>
+              <p class="price">From R$10</p>
+            </div>
+            <div class="card">
+              <h3>PFP — Half body</h3>
+              <p class="small">Torso, arms, more action.</p>
+              <p class="price">From R$25</p>
+            </div>
+            <div class="card">
+              <h3>PFP — Full body</h3>
+              <p class="small">Entire body, custom background.</p>
+              <p class="price">From R$40</p>
+            </div>
+          </div>
+
+          <div class="grid-3" style="margin-top:16px">
+            <div class="card">
+              <h3>Game thumbnail</h3>
+              <p class="small">1920×1080 cinematic graphic.</p>
+              <p class="price">From R$100</p>
+            </div>
+            <div class="card">
+              <h3>Notes</h3>
+              <p class="small">A few hours to a day per render. One round of minor revisions included; major changes may cost extra.</p>
+            </div>
+            <div class="card">
+              <h3>How to order</h3>
+              <p class="small">Choose your service and add-ons below, then contact me on Discord. I’ll confirm scope, price, and ETA.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="section fade-in">
+          <div class="panel" style="padding:16px">
+            <h2>Commission calculator</h2>
+            <p class="small">Select your base service and customize the details. Total updates live.</p>
+
+            <div class="grid-3">
+              <div class="card">
+                <label for="base">Base service</label>
+                <select id="base">
+                  <option value="10">PFP — Headshot (R$10)</option>
+                  <option value="25">PFP — Half body (R$25)</option>
+                  <option value="40">PFP — Full body (R$40)</option>
+                  <option value="100">Game thumbnail (R$100)</option>
+                </select>
+                <p class="note">Commercial discount applies to base only.</p>
+              </div>
+
+              <div class="card">
+                <label for="props">Props (R$5 each)</label>
+                <input type="number" id="props" min="0" max="20" value="0" />
+                <p class="note">Choose the number of complex custom props.</p>
+              </div>
+
+              <div class="card">
+                <label for="avatars">Avatars (R$10 each beyond 1)</label>
+                <input type="number" id="avatars" min="1" max="10" value="1" />
+                <p class="note">Base price includes 1 avatar. Extras cost R$10 each.</p>
+              </div>
+            </div>
+
+            <div class="checkbox-row" style="margin-top:16px">
+              <div class="card">
+                <label>
+                  <input type="checkbox" id="background" />
+                  <span style="margin-left:8px">Detailed background (R$10, one time)</span>
+                </label>
+              </div>
+              <div class="card">
+                <label>
+                  <input type="checkbox" id="rush" />
+                  <span style="margin-left:8px">Rush fee 24h (R$100, one time)</span>
+                </label>
+              </div>
+              <div class="card">
+                <label>
+                  <input type="checkbox" id="commercial" />
+                  <span style="margin-left:8px">Commercial use (50% off base only)</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:16px">
+              <h3>Total</h3>
+              <div id="breakdown" class="small"></div>
+              <div id="total" class="total">Total: R$10</div>
+            </div>
+
+            <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+              <a class="btn-xl primary" href="contact.html">Order on Discord</a>
+              <a class="btn-xl" href="tos.html">View TOS</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
+    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+    const baseSel = document.getElementById('base');
+    const propsInp = document.getElementById('props');
+    const avatarsInp = document.getElementById('avatars');
+    const bgChk = document.getElementById('background');
+    const rushChk = document.getElementById('rush');
+    const comChk = document.getElementById('commercial');
+    const totalEl = document.getElementById('total');
+    const breakdownEl = document.getElementById('breakdown');
+
+    function calc() {
+      const base = parseFloat(baseSel.value);
+      const props = Math.max(0, parseInt(propsInp.value || 0));
+      const avatars = Math.max(1, parseInt(avatarsInp.value || 1));
+
+      const propsCost = props * 5;
+      const extraAvatars = Math.max(0, avatars - 1);
+      const avatarsCost = extraAvatars * 10;
+
+      const bgCost = bgChk.checked ? 10 : 0;
+      const rushCost = rushChk.checked ? 100 : 0;
+      const discount = comChk.checked ? (base * 0.5) : 0; // 50% off base only
+
+      const total = (base - discount) + propsCost + avatarsCost + bgCost + rushCost;
+
+      breakdownEl.innerHTML = `
+        Base: R$${base} ${comChk.checked ? '(−50% = R$' + (base - (base*0.5)) + ')' : ''}<br>
+        Props (${props} × R$5): R$${propsCost}<br>
+        Extra avatars (${extraAvatars} × R$10): R$${avatarsCost}<br>
+        Background: R$${bgCost}<br>
+        Rush: R$${rushCost}
+      `;
+      totalEl.textContent = 'Total: R$' + total;
+    }
+    [baseSel, propsInp, avatarsInp, bgChk, rushChk, comChk].forEach(el => el.addEventListener('input', calc));
+    calc();
+  </script>
+</body>
+</html>
