@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nico • GFX — Community</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>Nico • GFX</span>
+      </div>
+      <nav style="display:flex;gap:10px">
+        <a class="btn" href="index.html">Home</a>
+        <a class="btn" href="gallery.html">Gallery</a>
+        <a class="btn" href="commissions.html">Commissions</a>
+        <a class="btn" href="reviews.html">Reviews</a>
+        <a class="btn" href="tos.html">TOS</a>
+        <a class="btn" href="contact.html">Contact</a>
+        <a class="btn primary" href="community.html">Community</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="wrap">
+        <div class="panel fade-in">
+          <h2>Community Board</h2>
+          <p class="small">Post your services, share images, and chat with others.</p>
+
+          <!-- Post form -->
+          <div class="card">
+            <label for="service">Service</label>
+            <input id="service" type="text" placeholder="Describe your service">
+            <label for="message">Message</label>
+            <textarea id="message" rows="3" placeholder="Say something..."></textarea>
+            <label for="image">Upload image</label>
+            <input id="image" type="file" accept="image/*">
+            <a id="submitPost" class="btn-xl primary" style="margin-top:10px">Post</a>
+          </div>
+
+          <!-- Posts list -->
+          <div id="postsList" class="section"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const KEY = 'nico_gfx_posts';
+    const listEl = document.getElementById('postsList');
+    const submitBtn = document.getElementById('submitPost');
+    const serviceEl = document.getElementById('service');
+    const msgEl = document.getElementById('message');
+    const imgEl = document.getElementById('image');
+
+    const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
+    const save = items => localStorage.setItem(KEY, JSON.stringify(items));
+
+    function render() {
+      const items = load();
+      if (!items.length) { listEl.innerHTML = '<div class="card"><p class="small">No posts yet. Be the first!</p></div>'; return }
+      listEl.innerHTML = items.map(p => `
+        <div class="card" style="margin-bottom:10px">
+          <h3>${p.service}</h3>
+          <p class="small">${p.msg}</p>
+          ${p.img ? `<img src="${p.img}" alt="Post image">` : ''}
+          <div class="small">${new Date(p.date).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    submitBtn.addEventListener('click', () => {
+      const service = serviceEl.value.trim();
+      const msg = msgEl.value.trim();
+      if (!service || !msg) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const items = load();
+        items.unshift({ service, msg, img: reader.result, date: Date.now() });
+        save(items);
+        serviceEl.value = ''; msgEl.value = ''; imgEl.value = '';
+        render();
+      };
+      if (imgEl.files[0]) reader.readAsDataURL(imgEl.files[0]);
+      else {
+        const items = load();
+        items.unshift({ service, msg, img: null, date: Date.now() });
+        save(items);
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
