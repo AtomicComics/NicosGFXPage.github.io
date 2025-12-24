@@ -36,87 +36,108 @@
     <div class="wrap"><p>© <span id="y"></span> Nico • GFX</p></div>
   </footer>
 
-  <!-- Firebase + your scripts -->
-  <script type="module">
-    // Import Firebase modules from CDN
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-analytics.js";
+  <!-- Firebase + your scr<script type="module">
+  // Import Firebase modules from CDN
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
-    // Your Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
-      authDomain: "nico-s-gfx-page.firebaseapp.com",
-      projectId: "nico-s-gfx-page",
-      storageBucket: "nico-s-gfx-page.appspot.com",
-      messagingSenderId: "427573612616",
-      appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
-      measurementId: "G-DJJ66RY3ST"
-    };
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
+    authDomain: "nico-s-gfx-page.firebaseapp.com",
+    projectId: "nico-s-gfx-page",
+    storageBucket: "nico-s-gfx-page.appspot.com",
+    messagingSenderId: "427573612616",
+    appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
+    measurementId: "G-DJJ66RY3ST"
+  };
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
 
-    // Footer year + fade-in
-    document.getElementById('y').textContent = new Date().getFullYear();
-    const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
-    document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+  // Login button
+  const loginBtn = document.createElement('a');
+  loginBtn.textContent = 'Login with Google';
+  loginBtn.className = 'btn-xl secondary';
+  loginBtn.style.marginBottom = '20px';
+  document.querySelector('.panel').prepend(loginBtn);
 
-    // Community board storage (localStorage for now)
-    const KEY = 'nico_gfx_posts';
-    const listEl = document.getElementById('postsList');
-    const submitBtn = document.getElementById('submitPost');
-    const serviceEl = document.getElementById('service');
-    const msgEl = document.getElementById('message');
-    const imgEl = document.getElementById('image');
+  const provider = new GoogleAuthProvider();
+  loginBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider).then(result => {
+      alert(`Welcome ${result.user.displayName}`);
+    }).catch(err => console.error(err));
+  });
 
-    const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; } };
-    const save = items => localStorage.setItem(KEY, JSON.stringify(items));
+  // Post form logic
+  const serviceEl = document.getElementById('service');
+  const msgEl = document.getElementById('message');
+  const imgEl = document.getElementById('image');
+  const submitBtn = document.getElementById('submitPost');
+  const listEl = document.getElementById('postsList');
 
-    function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  submitBtn.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert('Please log in first');
 
-    function render() {
-      const items = load();
-      if (!items.length) {
-        listEl.innerHTML = '<div class="card"><p class="small">No posts yet. Be the first!</p></div>';
-        return;
-      }
-      listEl.innerHTML = items.map(p => `
-        <div class="card" style="margin-bottom:10px">
-          <h3>${esc(p.service)}</h3>
-          <p class="small">${esc(p.msg)}</p>
-          ${p.img ? `<img src="${p.img}" alt="Post image">` : ''}
-          <div class="small">${new Date(p.date).toLocaleString()}</div>
-        </div>
-      `).join('');
+    const service = serviceEl.value.trim();
+    const msg = msgEl.value.trim();
+    if (!service || !msg) return;
+
+    let imgData = null;
+    const file = imgEl.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        imgData = reader.result;
+        await addDoc(collection(db, "posts"), {
+          service,
+          msg,
+          img: imgData,
+          user: user.displayName,
+          uid: user.uid,
+          timestamp: serverTimestamp()
+        });
+        serviceEl.value = ''; msgEl.value = ''; imgEl.value = '';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await addDoc(collection(db, "posts"), {
+        service,
+        msg,
+        img: null,
+        user: user.displayName,
+        uid: user.uid,
+        timestamp: serverTimestamp()
+      });
+      serviceEl.value = ''; msgEl.value = '';
     }
+  });
 
-    submitBtn.addEventListener('click', () => {
-      const service = serviceEl.value.trim();
-      const msg = msgEl.value.trim();
-      if (!service || !msg) return;
-
-      const file = imgEl.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          const items = load();
-          items.unshift({ service, msg, img: reader.result, date: Date.now() });
-          save(items);
-          serviceEl.value = ''; msgEl.value = ''; imgEl.value = '';
-          render();
-        };
-        reader.readAsDataURL(file);
-      } else {
-        const items = load();
-        items.unshift({ service, msg, img: null, date: Date.now() });
-        save(items);
-        serviceEl.value = ''; msgEl.value = '';
-        render();
-      }
+  // Render posts
+  onSnapshot(collection(db, "posts"), snapshot => {
+    listEl.innerHTML = '';
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      listEl.innerHTML += `
+        <div class="card" style="margin-bottom:10px">
+          <h3>${p.service}</h3>
+          <p class="small">${p.msg}</p>
+          ${p.img ? `<img src="${p.img}" alt="Post image">` : ''}
+          <div class="small">${new Date(p.timestamp?.seconds * 1000).toLocaleString()}</div>
+          <div class="small">Posted by ${p.user}</div>
+        </div>
+      `;
     });
+  });
 
-    render();
-  </script>
+  // Footer year + fade-in
+  document.getElementById('y').textContent = new Date().getFullYear();
+  const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
+  document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+</script>
 </body>
 </html>
