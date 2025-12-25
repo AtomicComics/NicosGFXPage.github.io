@@ -15,7 +15,7 @@
 * { box-sizing: border-box }
 html, body {
   margin: 0; padding: 0;
-  background: #0b0b12;
+  background: #FF0000;
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
