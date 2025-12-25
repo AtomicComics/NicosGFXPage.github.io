@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
   authDomain: "nico-s-gfx-page.firebaseapp.com",
   projectId: "nico-s-gfx-page",
-  storageBucket: "nico-s-gfx-page.appspot.com",
+  storageBucket: "nico-s-gfx-page.appspot.com", // ✅ FIXED
   messagingSenderId: "427573612616",
   appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
   measurementId: "G-DJJ66RY3ST"
