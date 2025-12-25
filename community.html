@@ -170,5 +170,6 @@
     const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible') }), {threshold:.15});
     document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
   </script>
+<script type="module" src="auth.js"></script>
 </body>
 </html>
