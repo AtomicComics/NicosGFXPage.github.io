@@ -22,5 +22,85 @@
       </div>
     </section>
   </main>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
+    authDomain: "nico-s-gfx-page.firebaseapp.com",
+    projectId: "nico-s-gfx-page",
+    storageBucket: "nico-s-gfx-page.appspot.com",
+    messagingSenderId: "427573612616",
+    appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
+    measurementId: "G-DJJ66RY3ST"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const usernameEl = document.getElementById('username');
+  const bioEl = document.getElementById('bio');
+  const avatarEl = document.getElementById('avatar');
+  const saveBtn = document.getElementById('saveProfile');
+
+  const provider = new GoogleAuthProvider();
+
+  // Auto-detect login state
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        usernameEl.textContent = `Logged in as: ${data.displayName}`;
+        if (data.bio) bioEl.value = data.bio;
+      } else {
+        usernameEl.textContent = `Logged in as: ${user.displayName}`;
+      }
+    } else {
+      usernameEl.textContent = "Not logged in.";
+      const loginBtn = document.createElement('a');
+      loginBtn.textContent = 'Login with Google';
+      loginBtn.className = 'btn-xl secondary';
+      loginBtn.onclick = () => signInWithPopup(auth, provider);
+      document.querySelector('.panel').prepend(loginBtn);
+    }
+  });
+
+  // Save profile info
+  saveBtn.addEventListener('click', async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("Please log in first");
+
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
+    const name = snap.exists() ? snap.data().displayName : user.displayName;
+
+    let avatarData = null;
+    const file = avatarEl.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        avatarData = reader.result;
+        await setDoc(userRef, {
+          displayName: name,
+          bio: bioEl.value,
+          avatar: avatarData
+        }, { merge: true });
+        alert("Profile saved!");
+      };
+      reader.readAsDataURL(file);
+    } else {
+      await setDoc(userRef, {
+        displayName: name,
+        bio: bioEl.value
+      }, { merge: true });
+      alert("Profile saved!");
+    }
+  });
+</script>
 </body>
 </html>
