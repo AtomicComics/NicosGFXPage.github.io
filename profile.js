@@ -3,15 +3,7 @@ import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
-// Firebase config
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+const firebaseConfig = { apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8", authDomain: "nico-s-gfx-page.firebaseapp.com", projectId: "nico-s-gfx-page", storageBucket: "nico-s-gfx-page.appspot.com", messagingSenderId: "427573612616", appId: "1:427573612616:web:9ba5b99f191a154cb6887d", measurementId: "G-DJJ66RY3ST" };
 
 // Init Firebase
 const app = initializeApp(firebaseConfig);
