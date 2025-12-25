@@ -1,4 +1,3 @@
-<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
@@ -46,4 +45,3 @@ const firebaseConfig = { apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8", auth
       userArea.appendChild(loginBtn);
     }
   });
-</script>
