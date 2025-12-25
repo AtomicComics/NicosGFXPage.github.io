@@ -31,13 +31,17 @@ const provider = new GoogleAuthProvider();
 onAuthStateChanged(auth, async user => {
   if (user) {
     loginStatus.textContent = `✅ Logged in as: ${user.displayName}`;
-    usernameDisplay.textContent = user.displayName;
+    const userRef = doc(db, "users", user.uid);
+    const snap = await getDoc(userRef);
 
-    const snap = await getDoc(doc(db, "users", user.uid));
     if (snap.exists()) {
       const data = snap.data();
       bioEl.value = data.bio || "";
+      usernameDisplay.textContent = data.displayName || user.displayName; // ✅ shows Nico_ if set
       bioDisplay.textContent = data.bio || "";
+      if (data.avatar) avatarPreview.src = data.avatar;
+    } else {
+      usernameDisplay.textContent = user.displayName;
     }
   } else {
     loginStatus.textContent = "⚠️ Not logged in.";
