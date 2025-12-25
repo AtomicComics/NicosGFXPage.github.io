@@ -4,8 +4,15 @@ import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth
 import { getFirestore, collection, addDoc, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-storage.js";
 
-// Firebase config (same as profile.js)
-const firebaseConfig = { const firebaseConfig = { apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8", authDomain: "nico-s-gfx-page.firebaseapp.com", projectId: "nico-s-gfx-page", storageBucket: "nico-s-gfx-page.appspot.com", messagingSenderId: "427573612616", appId: "1:427573612616:web:9ba5b99f191a154cb6887d", measurementId: "G-DJJ66RY3ST" }; };
+const firebaseConfig = {
+  apiKey: "AIzaSyD0vxLt9Lp_aY74FysXTvCSPrzehweZ_r8",
+  authDomain: "nico-s-gfx-page.firebaseapp.com",
+  projectId: "nico-s-gfx-page",
+  storageBucket: "nico-s-gfx-page.appspot.com", // ✅ FIXED
+  messagingSenderId: "427573612616",
+  appId: "1:427573612616:web:9ba5b99f191a154cb6887d",
+  measurementId: "G-DJJ66RY3ST"
+};
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
