@@ -8,22 +8,47 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<header>
-  <div class="wrap nav" style="flex-direction:column;align-items:center;text-align:center">
-    <div class="brand" style="margin-bottom:10px">
-      <!-- Logo -->
-      <img src="Images/nico-gfx-logo.png" alt="Nico GFX Logo" style="height:80px">
-      <!-- Login / Status area injected by auth.js -->
-      <span id="userArea" style="margin-left:20px; display:inline-block"></span>
+<header class="topbar">
+  <div class="topbar-left">
+    <img src="Images/nico-gfx-logo.png" alt="Logo">
+    <span class="sitename">Nico • GFX</span>
+  </div>
+
+  <!-- CENTER NAV LINKS (VISIBLE EVERYWHERE) -->
+  <nav class="topbar-nav">
+    <a href="index.html" class="topbar-link" id="navHome">Home</a>
+    <a href="gallery.html" class="topbar-link" id="navGallery">Gallery</a>
+    <a href="commissions.html" class="topbar-link" id="navCommissions">Commissions</a>
+    <a href="community.html" class="topbar-link" id="navCommunity">Community</a>
+    <a href="reviews.html" class="topbar-link" id="navReviews">Reviews</a>
+    <a href="tos.html" class="topbar-link" id="navTos">TOS</a>
+    <a href="contact.html" class="topbar-link" id="navContact">Contact</a>
+  </nav>
+
+  <div class="topbar-right">
+    <!-- Status select -->
+    <select id="statusSelect" class="status-dropdown">
+      <option value="online">Online</option>
+      <option value="dnd">Do Not Disturb</option>
+      <option value="offline">Offline</option>
+    </select>
+
+    <!-- Avatar + name + status dot + dropdown -->
+    <div class="avatar-menu-wrapper">
+      <div id="avatarToggle" class="topbar-avatar-btn">
+        <img id="topbarAvatar" class="topbar-avatar" src="https://via.placeholder.com/128">
+        <span id="topbarName" class="topbar-username">Loading...</span>
+        <span id="topbarStatusDot" class="status-dot status-offline"></span>
+      </div>
+
+      <!-- Dropdown menu opened by clicking avatar -->
+      <div id="avatarMenu" class="avatar-menu">
+        <div class="avatar-menu-item" id="menuProfile">Profile</div>
+        <div class="avatar-menu-item" id="menuCommunity">Community</div>
+        <div class="avatar-menu-item" id="menuSettings">Settings</div>
+        <div class="avatar-menu-item" id="menuLogout">Logout</div>
+      </div>
     </div>
-    <nav style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
-      <a class="btn" href="index.html">Home</a>
-      <a class="btn" href="gallery.html">Gallery</a>
-      <a class="btn" href="commissions.html">Commissions</a>
-      <a class="btn" href="reviews.html">Reviews</a>
-      <a class="btn" href="tos.html">TOS</a>
-      <a class="btn primary" href="contact.html">Contact</a>
-    </nav>
   </div>
 </header>
 
@@ -181,6 +206,9 @@
     [baseSel, propsInp, avatarsInp, bgChk, rushChk, comChk].forEach(el => el.addEventListener('input', calc));
     calc();
   </script>
-<script type="module" src="auth.js"></script>
+<script type="module" src="firebase.js"></script> 
+<script type="module" src="auth.js"></script> 
+<script type="module" src="profile.js"></script>
+<script type="module" src="topbar.js"></script>
 </body>
 </html>
