@@ -1,38 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nico • GFX — Profile</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <title>Nico • GFX - Profile</title>
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
-  <main>
-    <section class="section">
-      <div class="wrap">
-        <div class="panel fade-in">
-          <h2>Your Profile</h2>
-          <p id="loginStatus"></p>
+  <!-- NEW UNIFIED TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Images/nico-gfx-logo.png" alt="Logo">
+      <span class="sitename">Nico • GFX</span>
+    </div>
 
-          <label for="bio">Bio</label>
-          <textarea id="bio" rows="3" placeholder="Write something about yourself..."></textarea>
+    <nav class="topbar-nav">
+      <a href="index.html" class="topbar-link" id="navHome">Home</a>
+      <a href="gallery.html" class="topbar-link" id="navGallery">Gallery</a>
+      <a href="commissions.html" class="topbar-link" id="navCommissions">Commissions</a>
+      <a href="community.html" class="topbar-link" id="navCommunity">Community</a>
+      <a href="reviews.html" class="topbar-link" id="navReviews">Reviews</a>
+      <a href="tos.html" class="topbar-link" id="navTos">TOS</a>
+      <a href="contact.html" class="topbar-link" id="navContact">Contact</a>
+    </nav>
 
-          <label for="avatar">Avatar</label>
-          <input id="avatar" type="file" accept="image/*">
+    <div class="topbar-right">
+      <select id="statusSelect" class="status-dropdown">
+        <option value="online">Online</option>
+        <option value="dnd">Do Not Disturb</option>
+        <option value="offline">Offline</option>
+      </select>
 
-          <a id="saveProfile" class="btn-xl primary">Save Profile</a>
+      <div class="avatar-menu-wrapper">
+        <div id="avatarToggle" class="topbar-avatar-btn">
+          <img id="topbarAvatar" class="topbar-avatar" src="https://via.placeholder.com/128">
+          <span id="topbarName" class="topbar-username">Loading...</span>
+          <span id="topbarStatusDot" class="status-dot status-offline"></span>
         </div>
 
-        <!-- Profile Preview -->
-        <div class="profile-card">
-          <img id="avatarPreview" src="" alt="Avatar" width="120">
-          <h3 id="usernameDisplay"></h3>
-          <p id="bioDisplay"></p>
+        <div id="avatarMenu" class="avatar-menu">
+          <div class="avatar-menu-item" id="menuProfile">Profile</div>
+          <div class="avatar-menu-item" id="menuCommunity">Community</div>
+          <div class="avatar-menu-item" id="menuSettings">Settings</div>
+          <div class="avatar-menu-item" id="menuLogout">Logout</div>
         </div>
       </div>
-    </section>
+    </div>
+  </header>
+
+  <main class="wrap profile-layout section">
+    <!-- Left: Profile Editor -->
+    <div class="panel fade-in">
+      <h2>Your Profile</h2>
+      <p id="loginStatus">Logged in as:</p>
+
+      <label for="displayName">Display Name</label>
+      <input id="displayName" type="text" placeholder="Choose your name">
+
+      <label for="permanentName">Permanent Name</label>
+      <input id="permanentName" type="text" placeholder="Unique name (changes every 7 days)">
+
+      <label for="bio">Bio</label>
+      <textarea id="bio" rows="3" placeholder="Write something about yourself..."></textarea>
+
+      <label for="avatar">Avatar</label>
+      <input id="avatar" type="file" accept="image/*">
+
+      <h3 style="margin-top:20px;">Social Links</h3>
+
+      <label for="discord">Discord</label>
+      <input id="discord" type="text" placeholder="Your Discord tag">
+
+      <label for="instagram">Instagram</label>
+      <input id="instagram" type="text" placeholder="@yourusername">
+
+      <label for="robloxUser">Roblox Username</label>
+      <input id="robloxUser" type="text" placeholder="Your Roblox username">
+
+      <a id="saveProfile" class="btn-xl primary" style="margin-top:20px;display:inline-block;cursor:pointer;">Save Profile</a>
+
+      <!-- Admin-only panel: titles -->
+      <div class="admin-panel" id="adminPanel" style="display:none;">
+        <h3>Assign Titles</h3>
+        <div id="adminUserList"></div>
+      </div>
+    </div>
+
+    <!-- Right: Profile Preview -->
+    <div class="profile-card card fade-in">
+      <h2>Profile Preview</h2>
+      <div style="margin-bottom:12px;">
+        <img id="avatarPreview" src="https://via.placeholder.com/128" alt="Avatar" style="width:128px;height:128px;object-fit:cover;margin:0 auto 10px;">
+      </div>
+      <div>
+        <div id="displayNamePreview" style="font-size:20px;font-weight:700;">Display Name</div>
+        <div id="permanentNameDisplay" class="permanent-name" style="margin-top:4px;">PermanentName</div>
+        <div id="titleBadge" class="title-badge" style="margin-top:6px;display:none;">OWNER</div>
+        <p id="bioPreview" class="small" style="margin-top:10px;">Your bio will show here.</p>
+        <div id="robloxBadge" class="roblox-badge" style="margin-top:10px;display:none;"></div>
+        <div style="margin-top:10px;">
+          <span class="small" id="discordPreview"></span><br>
+          <span class="small" id="instagramPreview"></span>
+        </div>
+      </div>
+
+      <div class="reviews-section" id="userReviews">
+        <h3>Reviews</h3>
+        <div id="reviewsList"></div>
+      </div>
+    </div>
   </main>
 
-  <script type="module" src="profile.js"></script>
+  <!-- Order: firebase -> topbar -> profile -->
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="topbar.js"></script>
+  <script type="module" src="profile.js?v=6"></script>
 </body>
 </html>
